@@ -6,7 +6,7 @@ import ltd.yazz.reward.util.orElse
 
 abstract class BaseRecyclerAdapter<M, VH : BaseViewHolder<M>>() : RecyclerView.Adapter<VH>(), RefreshableAdapter<M> {
 
-    var data: MutableList<M> = mutableListOf()
+    protected var data: MutableList<M> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()

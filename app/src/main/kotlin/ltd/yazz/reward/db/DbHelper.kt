@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.model.Models
@@ -62,6 +63,7 @@ class DbHelper(ctx: Context) : SQLiteOpenHelper(ctx, Constants.DB_NAME, null, Co
     private inline fun <T : Persistent> Cursor.map(f: (Cursor) -> T?): List<T> {
         val count = this.count
         val result = ArrayList<T>(count)
+        Log.d("DbHelper", count.toString())
         if (count > 0) {
             while (this.moveToNext()) {
                 val m = f(this)

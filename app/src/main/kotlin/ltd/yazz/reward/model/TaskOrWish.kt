@@ -32,11 +32,6 @@ data class TaskOrWish(
         val updateTime: Long = 0
 ) : Parcelable, Persistent {
 
-
-    override fun table(): String {
-        return "task_or_wish"
-    }
-
     override fun toContentValues(): ContentValues {
         val value = ContentValues()
         value.put("title", title)
@@ -120,10 +115,46 @@ data class TaskOrWish(
     }
 
     companion object CREATOR : Parcelable.Creator<TaskOrWish> {
+        //        init {
+        //            Models.register(TaskOrWish::class.java.simpleName.toTableName(), TaskOrWish::class.java)
+//        }
+        fun newTask(title: String, amount: Int, desc: String? = null): TaskOrWish {
 
-        init {
-            Models.register(TaskOrWish::class.java.simpleName.toTableName(), TaskOrWish::class.java)
+            return TaskOrWish(
+                    _id = 0,
+                    title = title,
+                    type = Constants.TYPE_TASK,
+                    desc = desc.orEmpty(),
+                    amount = amount,
+                    state = Constants.STATE_NEW,
+                    lastView = Date().time,
+                    viewTimes = 0,
+                    startTime = Date().time,
+                    endTime = Date().time,
+                    updateTime = Date().time,
+                    createTime = Date().time
+            )
         }
+
+        fun newWish(title: String, amount: Int, desc: String? = null): TaskOrWish {
+
+            return TaskOrWish(
+                    _id = 0,
+                    title = title,
+                    type = Constants.TYPE_WISH,
+                    desc = desc.orEmpty(),
+                    amount = amount,
+                    state = Constants.STATE_NEW,
+                    lastView = Date().time,
+                    viewTimes = 0,
+                    startTime = Date().time,
+                    endTime = Date().time,
+                    updateTime = Date().time,
+                    createTime = Date().time
+            )
+        }
+
+//
 
         fun create(): String {
             val sql = "create table if not exists task_or_wish " +
@@ -154,40 +185,5 @@ data class TaskOrWish(
     }
 }
 
-fun newTask(title: String, amount: Int, desc: String? = null): TaskOrWish {
-
-    return TaskOrWish(
-            _id = 0,
-            title = title,
-            type = Constants.TYPE_TASK,
-            desc = desc.orEmpty(),
-            amount = amount,
-            state = Constants.STATE_NEW,
-            lastView = Date().time,
-            viewTimes = 0,
-            startTime = Date().time,
-            endTime = Date().time,
-            updateTime = Date().time,
-            createTime = Date().time
-    )
-}
-
-fun newWish(title: String, amount: Int, desc: String? = null): TaskOrWish {
-
-    return TaskOrWish(
-            _id = 0,
-            title = title,
-            type = Constants.TYPE_WISH,
-            desc = desc.orEmpty(),
-            amount = amount,
-            state = Constants.STATE_NEW,
-            lastView = Date().time,
-            viewTimes = 0,
-            startTime = Date().time,
-            endTime = Date().time,
-            updateTime = Date().time,
-            createTime = Date().time
-    )
-}
 
 

@@ -10,20 +10,31 @@ package ltd.yazz.reward.ui.activity
  */
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_edit.*
 
 import ltd.yazz.reward.App
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
-import ltd.yazz.reward.model.newTask
-import ltd.yazz.reward.model.newWish
+import ltd.yazz.reward.util.Utils
 
 
-class EditActivity : BaseActivity() {
+/**
+ * Project:Reward
+ * Create Time: 17-8-29.
+ * Description:
+ * @author zzhen zzzhen1994@gmail.com
+ * @version
+ */
+class EditActivity : BaseActivity(), View.OnClickListener {
+
+
     companion object {
         const val TAG = "EditActivity"
     }
@@ -33,6 +44,7 @@ class EditActivity : BaseActivity() {
     private var oldTask: TaskOrWish? = null
 
     private var isNew = true//默认是新建
+    private var amountHint = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +58,28 @@ class EditActivity : BaseActivity() {
 
     override fun layout(): Int = R.layout.activity_edit
 
-    override fun initValue() {
+    override fun initValue(savedInstanceState: Bundle?) {
     }
 
     override fun initView() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        card_wrapper.setOnClickListener(this)
+
         fab.setOnClickListener({ _ ->
+            val amount = item_amount.text.toString().toInt()
+            if (amount < 0) {
+                Utils.makeShortToast(this, "${amountHint}不能小于零")
+                return@setOnClickListener
+            }
+            if (item_title.text.isBlank()) {
+                Utils.makeShortToast(this, "名称不能为空")
+                return@setOnClickListener
+            }
             val task = when (type) {
-                Constants.TYPE_WISH -> newWish(task_title.text.toString(), item_amount.text.toString().toInt(), item_desc.text.toString())
-                else -> newTask(task_title.text.toString(), item_amount.text.toString().toInt(), item_desc.text.toString())
+                Constants.TYPE_WISH -> TaskOrWish.newWish(item_title.text.toString(), amount, item_desc.text.toString())
+                else -> TaskOrWish.newTask(item_title.text.toString(), amount, item_desc.text.toString())
             }
             val newTask: TaskOrWish = if (!isNew) {
                 val oldTask = oldTask!!
@@ -74,6 +98,17 @@ class EditActivity : BaseActivity() {
         })
     }
 
+    override fun onClick(p0: View?) {
+        hideKeyboard()
+    }
+
+    private fun hideKeyboard() {
+        val view = currentFocus
+        if (view != null) {
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
+
     private fun setup(intent: Intent) {
         oldTask = intent.getParcelableExtra(Constants.TASK_OR_WISH_INTENT_KEY)
         type = intent.getIntExtra(Constants.TYPE_KEY, Constants.TYPE_TASK)
@@ -81,14 +116,21 @@ class EditActivity : BaseActivity() {
         if (oldTask != null) {
             isNew = false
             val task = oldTask!!
-            task_title.setText(task.title)
+            item_title.setText(task.title)
             item_desc.setText(task.desc)
             item_amount.setText(task.amount.toString())
         }
         Log.i(TAG, oldTask?.toString().orEmpty())
         when (type) {
-            Constants.TYPE_WISH -> task_title.hint = Constants.TITLE_WISH
-            else -> task_title.hint = Constants.TITLE_TASK
+            Constants.TYPE_WISH -> {
+                item_title_wrapper.hint = Constants.TITLE_WISH
+                amountHint = "价值"
+            }
+            else -> {
+                item_title_wrapper.hint = Constants.TITLE_TASK
+                amountHint = "奖励"
+            }
         }
+        item_amount_wrapper.hint = amountHint
     }
 }

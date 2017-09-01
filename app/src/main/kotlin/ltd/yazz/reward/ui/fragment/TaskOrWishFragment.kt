@@ -1,6 +1,7 @@
 package ltd.yazz.reward.ui.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -24,12 +25,13 @@ import ltd.yazz.reward.util.Utils
 class TaskOrWishFragment : PageFragment() {
 
     var adapter: TaskListAdapter = TaskListAdapter(mutableListOf())
+    var listener: OnCreditsChangeListener? = null
+
     private var taskListView: RecyclerView? = null
     private var emptyTextHint: TextView? = null
 
     private var title: String = Constants.TITLE_TASK
     private var type: Int = Constants.TYPE_TASK
-
 
     override fun layout(): Int = R.layout.list_task
     override fun getTitle(): String = this.title
@@ -42,6 +44,20 @@ class TaskOrWishFragment : PageFragment() {
         }
         adapter.registerAdapterDataObserver(AdapterDataObserver())
         adapter.fill(tasks)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is OnCreditsChangeListener) {
+            listener = context
+        } else {
+            throw RuntimeException("need a listener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     override fun initView(view: View) {
@@ -88,6 +104,7 @@ class TaskOrWishFragment : PageFragment() {
             val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
             val pos = data.getIntExtra(Constants.EDIT_TASK_OR_WISH_POSITION, -1)
             if (task != null && pos >= 0) {
+                val oldTask = adapter.getItem(pos)!!
                 adapter.update(pos, task)
             }
         }
@@ -104,6 +121,11 @@ class TaskOrWishFragment : PageFragment() {
                 .setPositiveButton(R.string.ok, { _, _ ->
                     if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_DONE)) > 0) {
                         adapter.remove(position)
+                        if (task.type == Constants.TYPE_WISH) {
+                            listener?.onChange(-task.amount)
+                        } else {
+                            listener?.onChange(task.amount)
+                        }
                         Utils.makeShortToast(activity, "成功$title")
                     }
                 })
@@ -120,7 +142,7 @@ class TaskOrWishFragment : PageFragment() {
                 .setNegativeButton(R.string.cancel, { v, _ -> v.dismiss() })
                 .setPositiveButton(R.string.ok, { _, _ ->
                     val task = adapter.getItem(position)!!
-                    if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_CNACEL)) > 0) {
+                    if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_CANCEL)) > 0) {
                         adapter.remove(position)
                         Utils.makeShortToast(activity, "取消成功")
                     }
@@ -164,6 +186,10 @@ class TaskOrWishFragment : PageFragment() {
             super.onItemRangeChanged(positionStart, itemCount, payload)
             onChanged()
         }
+    }
+
+    interface OnCreditsChangeListener {
+        fun onChange(credits: Int)
     }
 
 

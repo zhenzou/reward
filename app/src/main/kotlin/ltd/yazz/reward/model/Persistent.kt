@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.os.Build
 
 import ltd.yazz.reward.util.put
+import ltd.yazz.reward.util.toTableName
 
 
 /**
@@ -15,7 +16,7 @@ import ltd.yazz.reward.util.put
  * @version
  */
 interface Persistent {
-    fun table(): String
+    fun table(): String = this.javaClass.simpleName.toTableName()
     fun toContentValues(): ContentValues
     fun from(data: Cursor): Persistent
 //    fun diff(data: T): T

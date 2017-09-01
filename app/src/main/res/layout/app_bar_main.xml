@@ -36,6 +36,18 @@
         android:background="@color/dark_background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <TextView
+        android:id="@+id/credits_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:background="@drawable/border_textview"
+        android:gravity="center_vertical"
+        android:paddingStart="30dp"
+        android:text="@string/credits_text"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

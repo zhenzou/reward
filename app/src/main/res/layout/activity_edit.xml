@@ -49,6 +49,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -67,14 +68,14 @@
                 android:padding="30dp">
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/item_title_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/task_title"
+                        android:id="@+id/item_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/task" />
+                        android:layout_height="wrap_content" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -90,6 +91,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/item_amount_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp">
@@ -98,7 +100,6 @@
                         android:id="@+id/item_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/amount"
                         android:inputType="number" />
                 </android.support.design.widget.TextInputLayout>
 

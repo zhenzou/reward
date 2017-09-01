@@ -28,6 +28,4 @@ abstract class BaseFragment : Fragment() {
     protected abstract fun initValue()
 
     protected abstract fun initView(view: View)
-
-    fun update() {}
 }

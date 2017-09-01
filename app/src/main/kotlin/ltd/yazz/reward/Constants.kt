@@ -13,7 +13,7 @@ object Constants{
     val STATE_NEW    = 11
     val STATE_DOING  = 21
     val STATE_DONE   = 31
-    val STATE_CNACEL = 41
+    val STATE_CANCEL = 41
 
     val VERSION      = 1
 

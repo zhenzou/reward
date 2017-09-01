@@ -19,12 +19,15 @@ class TaskOrWishService(private val helper: DbHelper) {
     private val table = "task_or_wish"
 
     fun findAllTask(): List<TaskOrWish> {
-        val tasks = helper.query(table, "type=? and state =?", Constants.TYPE_TASK, Constants.STATE_NEW)
-        return tasks.map { task -> task as TaskOrWish }.toList()
+        return find("type=? and state =?", Constants.TYPE_TASK, Constants.STATE_NEW)
     }
 
     fun findAllWish(): List<TaskOrWish> {
-        val tasks = helper.query(table, "type=? and state =?", Constants.TYPE_WISH, Constants.STATE_NEW)
+        return find("type=? and state =?", Constants.TYPE_WISH, Constants.STATE_NEW)
+    }
+
+    private fun find(where: String, vararg args: Any): List<TaskOrWish> {
+        val tasks = helper.query(table, where, *args)
         return tasks.map { task -> task as TaskOrWish }.toList()
     }
 
@@ -35,6 +38,11 @@ class TaskOrWishService(private val helper: DbHelper) {
 
     fun editTaskOrWish(id: Long, value: Persistent): Int {
         return helper.update(table, value, "_id =?", id)
+    }
+
+    fun statistic(): Int {
+        val list = find("state=?", Constants.STATE_DONE)
+        return list.map { if (it.type == Constants.TYPE_WISH) -it.amount else it.amount }.sum()
     }
 
     fun finishTaskOrWish(id: Long): Int {

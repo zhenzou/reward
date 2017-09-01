@@ -13,8 +13,8 @@ import android.util.Log
 
 object Models {
 
-    //    private val models = mutableMapOf<String, Class<out Persistent>>("task_or_wish" to TaskOrWish::class.java)
-    private val models = mutableMapOf<String, Class<out Persistent>>()
+    private val models = mutableMapOf<String, Class<out Persistent>>("task_or_wish" to TaskOrWish::class.java)
+//    private val models = mutableMapOf<String, Class<out Persistent>>()
 
     fun <T : Persistent> register(table: String, clazz: Class<T>) {
         if (table.isNotEmpty()) {

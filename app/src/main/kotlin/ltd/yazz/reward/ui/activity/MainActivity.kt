@@ -2,6 +2,7 @@ package ltd.yazz.reward.ui.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -12,11 +13,13 @@ import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import ltd.yazz.reward.App
 
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
+import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
 
 /**
  * Project:Reward
@@ -26,8 +29,7 @@ import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
  * @version
  */
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-        ViewPager.OnPageChangeListener, View.OnClickListener {
-
+        ViewPager.OnPageChangeListener, View.OnClickListener, TaskOrWishFragment.OnCreditsChangeListener {
 
     companion object {
         const val TAG = "MainActivity"
@@ -35,10 +37,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private var type = Constants.TYPE_TASK
     private var title = Constants.TITLE_TASK
+    private var credits = 0
+        set(value) {
+            field = value
+            credits_text.text = "现有积分:${value.toString()}"
+        }
 
     override fun layout(): Int = R.layout.activity_main
 
-    override fun initValue() {
+    override fun initValue(savedInstanceState: Bundle?) {
+        credits = App.taskOrWishService().statistic()
     }
 
     override fun initView() {
@@ -132,6 +140,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    override fun onChange(credits: Int) {
+        this.credits += credits
+    }
+
     private fun setType(type: Int) {
         this.type = type
     }
@@ -139,7 +151,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun setTitle(title: String) {
         this.title = title
     }
-
 
     override fun onPageScrollStateChanged(state: Int) {}
 

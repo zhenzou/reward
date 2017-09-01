@@ -16,14 +16,14 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (layout() != 0) setContentView(layout())
-        initValue()
+        initValue(savedInstanceState)
         initView()
     }
 
     @LayoutRes
     protected abstract fun layout(): Int
 
-    protected abstract fun initValue()
+    protected abstract fun initValue(savedInstanceState: Bundle?)
     protected abstract fun initView()
 
 }
