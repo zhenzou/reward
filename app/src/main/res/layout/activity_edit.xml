@@ -83,7 +83,7 @@
                     android:layout_marginTop="15dp">
 
                     <EditText
-                        android:id="@+id/task_desc"
+                        android:id="@+id/item_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/desc" />
@@ -95,7 +95,7 @@
                     android:layout_marginTop="15dp">
 
                     <EditText
-                        android:id="@+id/task_amount"
+                        android:id="@+id/item_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/amount"

@@ -2,6 +2,9 @@ package ltd.yazz.reward.model
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.os.Build
+
+import ltd.yazz.reward.util.put
 
 
 /**
@@ -16,4 +19,26 @@ interface Persistent {
     fun toContentValues(): ContentValues
     fun from(data: Cursor): Persistent
 //    fun diff(data: T): T
+}
+
+
+class BasePersistent<K, V>(private val map: Map<K, V>) : Persistent {
+    override fun table(): String {
+        throw RuntimeException("not implement")
+    }
+
+    override fun toContentValues(): ContentValues {
+        val value = ContentValues()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            map.forEach { k, v -> value.put(k.toString(), v as Any) }
+        } else {
+            map.entries.forEach({ (k, v) -> value.put(k.toString(), v as Any) })
+        }
+        return value
+    }
+
+    override fun from(data: Cursor): Persistent {
+        throw RuntimeException("not implement")
+    }
+
 }

@@ -5,7 +5,7 @@
         <item
             android:id="@+id/nav_history"
             android:checked="true"
-            android:icon="@drawable/ic_book"
+            android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/nav_history" />
         <item
             android:id="@+id/nav_statistic"
@@ -25,7 +25,7 @@
                 android:icon="@drawable/ic_feedback"
                 android:title="@string/send" />
             <item
-                android:id="@+id/nav_info"
+                android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info"
                 android:title="@string/info" />
         </menu>

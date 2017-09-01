@@ -2,24 +2,20 @@ package ltd.yazz.reward.ui.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
-import ltd.yazz.reward.model.newTask
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 
 /**
@@ -112,7 +108,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_feedback -> {
             }
-            R.id.nav_info -> {
+            R.id.nav_about -> {
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

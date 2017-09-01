@@ -1,12 +1,12 @@
 package ltd.yazz.reward.ui.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.view.ViewGroup
+import ltd.yazz.reward.util.orElse
 
 
-abstract class BaseRecyclerAdapter<M, VH : BaseViewHolder<M>>() : RecyclerView.Adapter<VH>() {
+abstract class BaseRecyclerAdapter<M, VH : BaseViewHolder<M>>() : RecyclerView.Adapter<VH>(), RefreshableAdapter<M> {
 
-    var data: MutableList<M>? = null
+    var data: MutableList<M> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -18,50 +18,55 @@ abstract class BaseRecyclerAdapter<M, VH : BaseViewHolder<M>>() : RecyclerView.A
 
     protected var listener: BaseViewHolder.OnItemClickListener? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH = onCreateView(parent, viewType)
-
-    override fun onBindViewHolder(holder: VH, position: Int) = onBindView(holder, position)
-
     override fun getItemCount(): Int {
-        if (data != null) {
-            return data!!.size
-        }
-        return 0
+        return data.size
     }
-
-    protected abstract fun onCreateView(group: ViewGroup, viewType: Int): VH
-    protected abstract fun onBindView(holder: VH, position: Int)
 
     open fun setOnItemClickListener(listener: BaseViewHolder.OnItemClickListener?) {
         this.listener = listener
     }
 
-    fun getItem(position: Int): M? {
-        if (data != null) {
-            return this.data!![position]
-        }
-        return null
+    override fun refresh() {
+        notifyDataSetChanged()
     }
 
-    fun removeItem(position: Int) {
-        if (data != null) {
-            data!!.removeAt(position)
-            notifyItemRemoved(position)
+    override fun fill(data: List<M>) {
+        this.data = data.toMutableList()
+    }
+
+    override fun add(t: M) {
+        data.add(t)
+        notifyItemInserted(itemCount)
+    }
+
+    override fun add(pos: Int, t: M) {
+        data.add(pos, t)
+        notifyItemChanged(pos)
+    }
+
+    override fun remove(pos: Int): M? {
+        return if (data.size > pos) {
+            val item = data.removeAt(pos)
+            notifyItemRemoved(pos)
+            item
+        } else {
+            null
         }
+    }
+
+    override fun update(pos: Int, new: M) {
+        data[pos] = new
+        notifyItemChanged(pos)
+    }
+
+
+    fun getItem(position: Int): M? {
+        return data.get(position)
     }
 
     fun removeItem(item: M) {
-        if (data != null) {
-            val position = data!!.indexOf(item)
-            if (position != -1) removeItem(position)
-        }
-    }
-
-    fun addItem(item: M, position: Int = itemCount) {
-        if (data != null) {
-            data!!.add(position, item)
-            notifyItemInserted(position)
-        }
+        val pos = data.indexOf(item).orElse(-1)
+        if (pos >= 0) remove(pos)
     }
 
 }

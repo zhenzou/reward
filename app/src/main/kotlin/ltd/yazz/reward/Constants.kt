@@ -13,7 +13,7 @@ object Constants{
     val STATE_NEW    = 11
     val STATE_DOING  = 21
     val STATE_DONE   = 31
-    val STATE_CNACEL = 31
+    val STATE_CNACEL = 41
 
     val VERSION      = 1
 
@@ -28,6 +28,8 @@ object Constants{
     val TYPE_KEY     = "task_fragment_type"
     val TITLE_TASK   = "任务"
     val TITLE_WISH   = "心愿"
+
+    val EMPTY_LIST_TYPE=11
 
 
     val TASK_OR_WISH_INTENT_KEY="task_or_wish"

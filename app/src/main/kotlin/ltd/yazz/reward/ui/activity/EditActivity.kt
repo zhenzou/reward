@@ -54,8 +54,8 @@ class EditActivity : BaseActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         fab.setOnClickListener({ _ ->
             val task = when (type) {
-                Constants.TYPE_WISH -> newWish(task_title.text.toString(), task_amount.text.toString().toInt(), task_desc.text.toString())
-                else -> newTask(task_title.text.toString(), task_amount.text.toString().toInt(), task_desc.text.toString())
+                Constants.TYPE_WISH -> newWish(task_title.text.toString(), item_amount.text.toString().toInt(), item_desc.text.toString())
+                else -> newTask(task_title.text.toString(), item_amount.text.toString().toInt(), item_desc.text.toString())
             }
             val newTask: TaskOrWish = if (!isNew) {
                 val oldTask = oldTask!!
@@ -82,8 +82,8 @@ class EditActivity : BaseActivity() {
             isNew = false
             val task = oldTask!!
             task_title.setText(task.title)
-            task_desc.setText(task.desc)
-            task_amount.setText(task.amount.toString())
+            item_desc.setText(task.desc)
+            item_amount.setText(task.amount.toString())
         }
         Log.i(TAG, oldTask?.toString().orEmpty())
         when (type) {

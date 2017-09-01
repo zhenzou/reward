@@ -22,7 +22,6 @@ abstract class BaseViewHolder<M> constructor(itemView: View, listener: OnItemCli
     interface OnItemClickListener {
         fun onItemClick(view: View, position: Int)
         fun onItemLongClick(view: View, position: Int)
-
     }
 
     abstract fun bind(m: M)

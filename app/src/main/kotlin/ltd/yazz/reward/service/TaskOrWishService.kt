@@ -4,6 +4,7 @@ import ltd.yazz.reward.Constants
 import ltd.yazz.reward.db.DbHelper
 import ltd.yazz.reward.model.Persistent
 import ltd.yazz.reward.model.TaskOrWish
+import ltd.yazz.reward.util.toPersistent
 
 
 /**
@@ -34,5 +35,9 @@ class TaskOrWishService(private val helper: DbHelper) {
 
     fun editTaskOrWish(id: Long, value: Persistent): Int {
         return helper.update(table, value, "_id =?", id)
+    }
+
+    fun finishTaskOrWish(id: Long): Int {
+        return helper.update(table, mapOf("state" to Constants.STATE_DONE).toPersistent(), "_id =?", id)
     }
 }

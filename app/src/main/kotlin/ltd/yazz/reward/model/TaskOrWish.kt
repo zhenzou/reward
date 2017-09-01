@@ -7,6 +7,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 import ltd.yazz.reward.Constants
+import ltd.yazz.reward.util.toTableName
 
 /**
  * Project:Reward
@@ -120,11 +121,15 @@ data class TaskOrWish(
 
     companion object CREATOR : Parcelable.Creator<TaskOrWish> {
 
+        init {
+            Models.register(TaskOrWish::class.java.simpleName.toTableName(), TaskOrWish::class.java)
+        }
+
         fun create(): String {
             val sql = "create table if not exists task_or_wish " +
                     "(" +
                     "_id integer primary key autoincrement, " +
-                    "title text, desc text," +
+                    "title textId, desc textId," +
                     "amount integer," +
                     "state integer," +
                     "type integer," +

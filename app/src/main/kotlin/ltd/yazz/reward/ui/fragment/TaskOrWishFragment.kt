@@ -3,31 +3,35 @@ package ltd.yazz.reward.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.main_task_list.view.*
-import ltd.yazz.reward.App
+import android.widget.CheckBox
+import android.widget.TextView
+import kotlinx.android.synthetic.main.list_task.view.*
 
+import ltd.yazz.reward.App
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
-import ltd.yazz.reward.model.newTask
 import ltd.yazz.reward.ui.activity.EditActivity
-import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
-import ltd.yazz.reward.ui.adapter.RefreshableAdapter
 import ltd.yazz.reward.ui.adapter.TaskListAdapter
+import ltd.yazz.reward.util.Utils
 
-class TaskOrWishFragment : PageFragment(), RefreshableAdapter<TaskOrWish> {
-    //    private val adapter: TaskListAdapter = TaskListAdapter(mutableListOf(newTask("测试", 10, "测试描述")))
-//    private var adapter: TaskListAdapter = TaskListAdapter(emptyList<TaskOrWish>().toMutableList())
-    private var adapter: TaskListAdapter = TaskListAdapter(App.taskOrWishService().findAllTask().toMutableList())
+
+class TaskOrWishFragment : PageFragment() {
+
+    var adapter: TaskListAdapter = TaskListAdapter(mutableListOf())
+    private var taskListView: RecyclerView? = null
+    private var emptyTextHint: TextView? = null
 
     private var title: String = Constants.TITLE_TASK
     private var type: Int = Constants.TYPE_TASK
 
-    override fun layout(): Int = R.layout.main_task_list
+
+    override fun layout(): Int = R.layout.list_task
     override fun getTitle(): String = this.title
     override fun getType(): Int = this.type
 
@@ -36,28 +40,46 @@ class TaskOrWishFragment : PageFragment(), RefreshableAdapter<TaskOrWish> {
             Constants.TYPE_WISH -> App.taskOrWishService().findAllWish().toMutableList()
             else -> App.taskOrWishService().findAllTask().toMutableList()
         }
-        fill(tasks)
+        adapter.registerAdapterDataObserver(AdapterDataObserver())
+        adapter.fill(tasks)
     }
 
     override fun initView(view: View) {
+        taskListView = view.task_list
+        emptyTextHint = view.empty_hint
+        emptyTextHint?.setText(if (type == Constants.TYPE_WISH) R.string.empty_wish_text else R.string.empty_task_text)
+
         view.task_list.layoutManager = LinearLayoutManager(context)
         view.task_list.adapter = adapter
+        if (adapter.itemCount == 0) {
+            taskListView?.visibility = View.GONE
+            emptyTextHint?.visibility = View.VISIBLE
+        } else {
+            taskListView?.visibility = View.VISIBLE
+            emptyTextHint?.visibility = View.GONE
+        }
         adapter.setOnItemClickListener(this)
     }
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
         title = args?.getString(Constants.TITLE_KEY).toString()
-        type = args?.getInt(Constants.TYPE_KEY) ?: 0
+        type = args?.getInt(Constants.TYPE_KEY) ?: Constants.TYPE_TASK
     }
 
     override fun onItemClick(view: View, position: Int) {
-        val i = Intent()
-        i.putExtra(Constants.TYPE_KEY, type)
-        i.putExtra(Constants.TASK_OR_WISH_INTENT_KEY, adapter.getItem(position)!!)
-        i.putExtra(Constants.EDIT_TASK_OR_WISH_POSITION, position)
-        i.setClass(activity, EditActivity::class.java)
-        startActivityForResult(i, Constants.EDIT_TASK_OR_WISH_CODE)
+        Log.d(TAG, view.javaClass.canonicalName)
+        when (view) {
+            is CheckBox -> confirmFinishTask(view, position)
+            else -> {
+                val i = Intent()
+                i.putExtra(Constants.TYPE_KEY, type)
+                i.putExtra(Constants.TASK_OR_WISH_INTENT_KEY, adapter.getItem(position)!!)
+                i.putExtra(Constants.EDIT_TASK_OR_WISH_POSITION, position)
+                i.setClass(activity, EditActivity::class.java)
+                startActivityForResult(i, Constants.EDIT_TASK_OR_WISH_CODE)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -66,46 +88,82 @@ class TaskOrWishFragment : PageFragment(), RefreshableAdapter<TaskOrWish> {
             val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
             val pos = data.getIntExtra(Constants.EDIT_TASK_OR_WISH_POSITION, -1)
             if (task != null && pos >= 0) {
-                update(pos, task)
+                adapter.update(pos, task)
             }
         }
     }
 
+    private fun confirmFinishTask(view: CheckBox, position: Int) {
+        val task = adapter.getItem(position)!!
+        val title = resources.getString(if (type == Constants.TYPE_WISH) R.string.finish_wish else R.string.finish_task)
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+                .setIcon(R.drawable.ic_confirmation_number_black_24dp)
+                .setMessage("确定$title:${task.title}?")
+                .setNegativeButton(R.string.cancel, { v, _ -> view.isChecked = false;v.dismiss() })
+                .setPositiveButton(R.string.ok, { _, _ ->
+                    if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_DONE)) > 0) {
+                        adapter.remove(position)
+                        Utils.makeShortToast(activity, "成功$title")
+                    }
+                })
+        builder.show()
+    }
+
     override fun onItemLongClick(view: View, position: Int) {
+        if (type == Constants.TYPE_WISH) return //暂时不允许删除心愿
+        val title = adapter.getItem(position)!!.title
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.cancel_task)
+                .setIcon(R.drawable.ic_warning_black_24dp)
+                .setMessage("取消任务:$title?")
+                .setNegativeButton(R.string.cancel, { v, _ -> v.dismiss() })
+                .setPositiveButton(R.string.ok, { _, _ ->
+                    val task = adapter.getItem(position)!!
+                    if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_CNACEL)) > 0) {
+                        adapter.remove(position)
+                        Utils.makeShortToast(activity, "取消成功")
+                    }
+                })
+        builder.show()
     }
 
-    //TODO BASE
-    override fun refresh() {
-        adapter.notifyDataSetChanged()
-    }
-
-    override fun fill(data: List<TaskOrWish>) {
-        adapter.data = data.toMutableList()
-        adapter.notifyDataSetChanged()
-    }
-
-    override fun add(t: TaskOrWish) {
-        adapter.data!!.add(t)
-        adapter.notifyItemChanged(adapter.itemCount)
-    }
-
-    override fun add(pos: Int, t: TaskOrWish) {
-        adapter.data!!.add(pos, t)
-        adapter.notifyItemChanged(pos)
-    }
-
-    override fun remove(pos: Int): TaskOrWish? {
-        val data = adapter.data!!
-        return if (data.size > pos) {
-            data.removeAt(pos)
-        } else {
-            null
+    inner class AdapterDataObserver : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            if (adapter.itemCount == 0) {
+                taskListView?.visibility = View.GONE
+                emptyTextHint?.visibility = View.VISIBLE
+            } else {
+                taskListView?.visibility = View.VISIBLE
+                emptyTextHint?.visibility = View.GONE
+            }
         }
-    }
 
-    override fun update(pos: Int, new: TaskOrWish) {
-        adapter.data!![pos] = new
-        adapter.notifyItemChanged(pos)
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            super.onItemRangeRemoved(positionStart, itemCount)
+            onChanged()
+        }
+
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+            onChanged()
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            onChanged()
+
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            super.onItemRangeChanged(positionStart, itemCount)
+            onChanged()
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            super.onItemRangeChanged(positionStart, itemCount, payload)
+            onChanged()
+        }
     }
 
 

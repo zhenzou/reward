@@ -10,12 +10,19 @@
     <string name="amount">价值</string>
     <string name="task">任务</string>
     <string name="wish">心愿</string>
+    <string name="empty_task_text">还没有任务，新建一个吧</string>
+    <string name="empty_wish_text">还没有心愿，新建一个吧</string>
 
     <string name="navigation_drawer_open">打开导航抽屉</string>
     <string name="navigation_drawer_close">关闭导航抽屉</string>
 
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
+
+    <string name="cancel_task">取消任务</string>
+    <string name="cancel_wish">删除心愿</string>
+    <string name="finish_task">完成任务</string>
+    <string name="finish_wish">实现心愿</string>
 
     <string name="setting">设置</string>
     <string name="exit">退出</string>
