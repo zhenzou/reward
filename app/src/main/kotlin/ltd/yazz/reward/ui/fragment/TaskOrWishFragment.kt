@@ -25,7 +25,7 @@ import ltd.yazz.reward.util.Utils
 class TaskOrWishFragment : PageFragment() {
 
     var adapter: TaskListAdapter = TaskListAdapter(mutableListOf())
-    var listener: OnCreditsChangeListener? = null
+    private var listener: OnCreditsChangeListener? = null
 
     private var taskListView: RecyclerView? = null
     private var emptyTextHint: TextView? = null
@@ -51,7 +51,7 @@ class TaskOrWishFragment : PageFragment() {
         if (context is OnCreditsChangeListener) {
             listener = context
         } else {
-            throw RuntimeException("need a listener")
+            throw RuntimeException("need a OnCreditsChangeListener")
         }
     }
 

@@ -41,5 +41,4 @@ class BasePersistent<K, V>(private val map: Map<K, V>) : Persistent {
     override fun from(data: Cursor): Persistent {
         throw RuntimeException("not implement")
     }
-
 }

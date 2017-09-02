@@ -1,6 +1,7 @@
 package ltd.yazz.reward.model
 
 import android.util.Log
+import ltd.yazz.reward.util.toTableName
 
 
 /**
@@ -13,8 +14,15 @@ import android.util.Log
 
 object Models {
 
-    private val models = mutableMapOf<String, Class<out Persistent>>("task_or_wish" to TaskOrWish::class.java)
-//    private val models = mutableMapOf<String, Class<out Persistent>>()
+    private val models = mutableMapOf<String, Class<out Persistent>>()
+
+    init {
+        register(TaskOrWish::class.java)
+    }
+
+    fun <T : Persistent> register(clazz: Class<T>) {
+        register(clazz.simpleName.toTableName(), clazz)
+    }
 
     fun <T : Persistent> register(table: String, clazz: Class<T>) {
         if (table.isNotEmpty()) {

@@ -2,6 +2,8 @@ package ltd.yazz.reward.util
 
 import android.content.ContentValues
 import android.content.Context
+import android.support.design.widget.Snackbar
+import android.view.View
 import android.widget.Toast
 
 import ltd.yazz.reward.model.BasePersistent
@@ -21,6 +23,14 @@ object Utils {
 
     fun makeLongToast(ctx: Context, text: String) {
         Toast.makeText(ctx, text, Toast.LENGTH_LONG).show()
+    }
+
+    fun makeShortSnack(view: View, text: String) {
+        Snackbar.make(view, text, Snackbar.LENGTH_SHORT)
+    }
+
+    fun makeLongSnack(view: View, text: String) {
+        Snackbar.make(view, text, Snackbar.LENGTH_LONG)
     }
 }
 
@@ -45,9 +55,9 @@ fun String?.toTableName(): String {
                     builder.append(it)
                 }
             }
+//            this.foldIndexed("", { i, acc, c -> acc + (if (c.isUpperCase() && i > 0) "_${c.toLowerCase()}" else c.toLowerCase()) })
             builder.toString()
         }
-
     }
 }
 

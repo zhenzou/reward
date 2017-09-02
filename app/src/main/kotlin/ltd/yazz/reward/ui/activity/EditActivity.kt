@@ -1,14 +1,5 @@
 package ltd.yazz.reward.ui.activity
 
-
-/**
- * Project:Reward
- * Create Time: 17-8-29.
- * Description:
- * @author zzhen zzzhen1994@gmail.com
- * @version
- */
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent

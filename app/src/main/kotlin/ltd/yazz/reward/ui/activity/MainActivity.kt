@@ -20,6 +20,7 @@ import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
+import ltd.yazz.reward.util.Utils
 
 /**
  * Project:Reward
@@ -37,6 +38,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private var type = Constants.TYPE_TASK
     private var title = Constants.TITLE_TASK
+    private var lastPressBack = 0L
     private var credits = 0
         set(value) {
             field = value
@@ -65,11 +67,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onClick(view: View?) {
         when (view) {
-            fab -> onAdd() //点击新建按钮
+            fab -> onAddFabClick() //点击新建按钮
         }
     }
 
-    private fun onAdd() {
+    private fun onAddFabClick() {
         val i = Intent()
         i.putExtra(Constants.TYPE_KEY, type)
         i.setClass(this, EditActivity::class.java)
@@ -92,7 +94,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            val now = System.currentTimeMillis()
+            if (now - lastPressBack > Constants.EXIT_INTERVAL) {
+                Utils.makeShortToast(this, "再按一次退出")
+                lastPressBack = now
+            } else {
+                super.onBackPressed()
+                finish()
+            }
         }
     }
 

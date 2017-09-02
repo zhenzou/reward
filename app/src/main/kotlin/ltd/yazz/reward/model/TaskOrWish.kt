@@ -1,13 +1,11 @@
 package ltd.yazz.reward.model
 
-import java.util.*
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
-
 import ltd.yazz.reward.Constants
-import ltd.yazz.reward.util.toTableName
+import java.util.*
 
 /**
  * Project:Reward
@@ -115,9 +113,6 @@ data class TaskOrWish(
     }
 
     companion object CREATOR : Parcelable.Creator<TaskOrWish> {
-        //        init {
-        //            Models.register(TaskOrWish::class.java.simpleName.toTableName(), TaskOrWish::class.java)
-//        }
         fun newTask(title: String, amount: Int, desc: String? = null): TaskOrWish {
 
             return TaskOrWish(

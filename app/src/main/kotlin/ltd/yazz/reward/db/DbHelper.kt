@@ -10,6 +10,7 @@ import ltd.yazz.reward.Constants
 import ltd.yazz.reward.model.Models
 import ltd.yazz.reward.model.Persistent
 import ltd.yazz.reward.model.TaskOrWish
+import ltd.yazz.reward.util.andDo
 
 
 /**
@@ -67,9 +68,7 @@ class DbHelper(ctx: Context) : SQLiteOpenHelper(ctx, Constants.DB_NAME, null, Co
         if (count > 0) {
             while (this.moveToNext()) {
                 val m = f(this)
-                if (m != null) {
-                    result.add(m)
-                }
+                m?.andDo { result.add(m) }
             }
         }
         this.close()

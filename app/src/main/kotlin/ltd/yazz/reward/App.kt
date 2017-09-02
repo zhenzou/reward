@@ -1,7 +1,6 @@
 package ltd.yazz.reward
 
 import android.app.Application
-
 import ltd.yazz.reward.db.DbHelper
 import ltd.yazz.reward.service.TaskOrWishService
 
