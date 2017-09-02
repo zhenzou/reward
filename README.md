@@ -1,7 +1,7 @@
 # Reward
 
-### Intro
-A simple todo like app.
+Yet another todo like app.
+
 Reward yourself to finish todo task.
 
 ### Thanks
@@ -10,7 +10,17 @@ Reward yourself to finish todo task.
 - [**ReadMe**](https://github.com:Devifish/ReadMe)
 
 
-# 开源协议
+### TODO
+
+- [ ] Backup
+- [ ] Sync
+- [ ] History
+- [ ] Timeline
+- [ ] Statistic
+- [ ] Themes
+- [ ] UI
+
+### License
 
     Copyright (C) 2017 zzhen <zzhen1994@gmail.com>
 
