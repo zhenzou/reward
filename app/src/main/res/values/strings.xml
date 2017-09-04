@@ -3,6 +3,8 @@
 
     <string name="nav_history">历史</string>
     <string name="nav_statistic">统计</string>
+    <string name="nav_backup">备份</string>
+    <string name="nav_restore">恢复</string>
     <string name="community">社区</string>
 
     <string name="desc">描述</string>

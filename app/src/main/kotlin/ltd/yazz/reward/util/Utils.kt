@@ -2,6 +2,7 @@ package ltd.yazz.reward.util
 
 import android.content.ContentValues
 import android.content.Context
+import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.view.View
 import android.widget.Toast
@@ -31,6 +32,17 @@ object Utils {
 
     fun makeLongSnack(view: View, text: String) {
         Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+    }
+
+    /**
+     *Returns path with /
+     */
+    fun externalStorageDirectory(): String? {
+        val state = Environment.getExternalStorageState()
+        if (state == Environment.MEDIA_MOUNTED) {
+            return Environment.getExternalStorageDirectory().absolutePath + "/"
+        }
+        return null
     }
 }
 
@@ -74,6 +86,7 @@ fun ContentValues.put(key: String, any: Any) {
         is Float -> put(key, any)
         is Double -> put(key, any)
         is Boolean -> put(key, any)
+        is ByteArray -> put(key, any)
     }
 }
 

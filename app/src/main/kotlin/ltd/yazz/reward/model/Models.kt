@@ -31,6 +31,10 @@ object Models {
         }
     }
 
+    inline fun <reified T : Persistent> new(): Persistent? {
+        return new(T::class.java.simpleName.toTableName())
+    }
+
     fun new(table: String): Persistent? {
         return models[table]?.newInstance()
     }

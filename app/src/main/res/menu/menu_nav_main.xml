@@ -11,6 +11,14 @@
             android:id="@+id/nav_statistic"
             android:icon="@drawable/ic_list"
             android:title="@string/nav_statistic" />
+        <item
+            android:id="@+id/nav_backup"
+            android:icon="@drawable/ic_list"
+            android:title="@string/nav_backup" />
+        <item
+            android:id="@+id/nav_restore"
+            android:icon="@drawable/ic_list"
+            android:title="@string/nav_restore" />
     </group>
 
     <item

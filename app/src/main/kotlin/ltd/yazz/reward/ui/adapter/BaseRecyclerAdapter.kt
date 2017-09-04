@@ -65,7 +65,7 @@ abstract class BaseRecyclerAdapter<M, VH : BaseViewHolder<M>>() : RecyclerView.A
     }
 
     fun removeItem(item: M) {
-        val pos = data.indexOf(item).orElse(-1)
+        val pos = data.indexOf(item)
         if (pos >= 0) remove(pos)
     }
 

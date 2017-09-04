@@ -26,6 +26,10 @@ class TaskOrWishService(private val helper: DbHelper) {
         return find("type=? and state =?", Constants.TYPE_WISH, Constants.STATE_NEW)
     }
 
+    fun findAllTaskOrWish(): List<TaskOrWish> {
+        return find("")
+    }
+
     private fun find(where: String, vararg args: Any): List<TaskOrWish> {
         val tasks = helper.query(table, where, *args)
         return tasks.map { task -> task as TaskOrWish }.toList()

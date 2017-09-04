@@ -1,8 +1,10 @@
 package ltd.yazz.reward.ui.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -11,12 +13,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.github.salomonbrys.kotson.toJsonArray
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import ltd.yazz.reward.App
 
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
+import ltd.yazz.reward.model.BackupInfo
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
@@ -127,9 +132,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_about -> {
             }
+            R.id.nav_backup -> {
+                backupTaskOrWish("")
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun backupTaskOrWish(path: String) {
+        val file = Utils.externalStorageDirectory() ?: return
+        val all = App.taskOrWishService().findAllTaskOrWish()
+        val bi = BackupInfo(Constants.VERSION, all)
+        val backupPath = bi.backup(file)
+        Log.d(TAG, backupPath)
+        Log.d(TAG, bi.toJson())
     }
 
     override fun onPageSelected(position: Int) {

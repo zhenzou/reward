@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import ltd.yazz.reward.Constants
 import java.util.*
 
@@ -22,11 +23,17 @@ data class TaskOrWish(
         val amount: Int = 0,
         val state: Int = 0, //任务状态
         val type: Int = 0, //类型，当前是 11 Task，21 Wish
+        @SerializedName("last_view")
         val lastView: Long = 0, //最后点击的时间
+        @SerializedName("view_times")
         val viewTimes: Int = 0, //点击次数
+        @SerializedName("start_time")
         val startTime: Long = 0,
+        @SerializedName("end_time")
         val endTime: Long = 0,
+        @SerializedName("create_time")
         val createTime: Long = 0,
+        @SerializedName("update_time")
         val updateTime: Long = 0
 ) : Parcelable, Persistent {
 
