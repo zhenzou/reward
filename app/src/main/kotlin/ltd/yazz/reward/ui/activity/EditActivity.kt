@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -36,7 +37,6 @@ class EditActivity : BaseActivity(), View.OnClickListener, TextView.OnEditorActi
     private var type = Constants.TYPE_TASK
     private var pos = -1
     private var oldTask: TaskOrWish? = null
-
     private var isNew = true//默认是新建
     private var amountHint = ""
 
@@ -59,13 +59,15 @@ class EditActivity : BaseActivity(), View.OnClickListener, TextView.OnEditorActi
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         card_wrapper.setOnClickListener(this)
-//        item_title.setOnEditorActionListener(this)
+        item_title.setRawInputType(InputType.TYPE_CLASS_TEXT)//Must
+        item_desc.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        item_title.setOnEditorActionListener(this)
+        item_desc.setOnEditorActionListener(this)
         fab.setOnClickListener(this)
     }
 
     override fun onEditorAction(view: TextView?, type: Int, event: KeyEvent?): Boolean {
-        if (type == EditorInfo.IME_NULL || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-            Log.d("EditActivity", event?.keyCode.toString())
+        if (type == EditorInfo.IME_ACTION_DONE || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
             when (view) {
                 item_title -> {
                     item_title.clearFocus()
