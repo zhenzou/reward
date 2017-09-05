@@ -33,13 +33,13 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dark_background"
+        android:background="@color/DARK_BACKGROUND"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <TextView
         android:id="@+id/credits_text"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/bottom_bar_height"
         android:layout_gravity="bottom|end"
         android:background="@drawable/border_textview"
         android:gravity="center_vertical"
@@ -55,7 +55,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@mipmap/ic_new_task_24dp"
+        android:src="@drawable/ic_new_task_24dp"
         app:backgroundTint="@color/ACCENT_PINK_A200"
         app:borderWidth="0dp" />
 

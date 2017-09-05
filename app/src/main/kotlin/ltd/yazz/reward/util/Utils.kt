@@ -2,6 +2,7 @@ package ltd.yazz.reward.util
 
 import android.content.ContentValues
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.view.View
@@ -32,6 +33,14 @@ object Utils {
 
     fun makeLongSnack(view: View, text: String) {
         Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+    }
+
+    fun getColor(ctx: Context, resId: Int): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ctx.getColor(resId) else ctx.resources.getColor(resId)
+    }
+
+    fun getString(ctx: Context, resId: Int): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ctx.getString(resId) else ctx.resources.getString(resId)
     }
 
     /**
@@ -87,6 +96,18 @@ fun ContentValues.put(key: String, any: Any) {
         is Double -> put(key, any)
         is Boolean -> put(key, any)
         is ByteArray -> put(key, any)
+    }
+}
+
+fun Int.between(left: Int, right: Int): Boolean {
+    return this in (left)..(right - 1)
+}
+
+fun String.zeroOrInt(): Int {
+    return try {
+        toInt()
+    } catch (e: NumberFormatException) {
+        return 0
     }
 }
 

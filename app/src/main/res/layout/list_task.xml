@@ -11,6 +11,7 @@
         style="@style/MainPagePadding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/bottom_bar_height"
         android:paddingTop="5dp"
         tools:context="ltd.yazz.reward.ui.fragment.TaskOrWishFragment">
 

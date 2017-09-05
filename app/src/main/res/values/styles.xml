@@ -1,9 +1,9 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/COLOR_PRIMARY</item>
+        <item name="colorPrimaryDark">@color/COLOR_PRIMARY_DARK</item>
+        <item name="colorAccent">@color/COLOR_ACCENT</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -28,7 +28,7 @@
 
     <style name="FullscreenTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/COLOR_PRIMARY_DARK</item>
     </style>
 
 </resources>
