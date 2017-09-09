@@ -4,8 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.item_task_list.view.*
-
+import kotlinx.android.synthetic.main.item_task.view.*
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.util.Utils
@@ -23,7 +22,7 @@ class TaskListAdapter(data: MutableList<TaskOrWish>) : BaseRecyclerAdapter<TaskO
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         ctx = parent.context
-        val view = LayoutInflater.from(ctx).inflate(R.layout.item_task_list, parent, false)
+        val view = LayoutInflater.from(ctx).inflate(R.layout.item_task, parent, false)
         return TaskViewHolder(ctx!!, view, listener)
     }
 

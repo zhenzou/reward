@@ -11,7 +11,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_edit.*
+import kotlinx.android.synthetic.main.activity_task_edit.*
 
 import ltd.yazz.reward.App
 import ltd.yazz.reward.Constants
@@ -50,7 +50,7 @@ class EditActivity : BaseActivity(), View.OnClickListener, TextView.OnEditorActi
         setup(intent ?: Intent())
     }
 
-    override fun layout(): Int = R.layout.activity_edit
+    override fun layout(): Int = R.layout.activity_task_edit
 
     override fun initValue(savedInstanceState: Bundle?) {
     }

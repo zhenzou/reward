@@ -1,10 +1,8 @@
 package ltd.yazz.reward.ui.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -13,10 +11,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.github.salomonbrys.kotson.toJsonArray
-import com.google.gson.Gson
+import kotlinx.android.synthetic.main.layout_main_nav.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import ltd.yazz.reward.App
 
 import ltd.yazz.reward.Constants
@@ -26,6 +22,7 @@ import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
 import ltd.yazz.reward.util.Utils
+import ltd.yazz.reward.util.orElse
 
 /**
  * Project:Reward
@@ -50,7 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             credits_text.text = "现有积分:${value.toString()}"
         }
 
-    override fun layout(): Int = R.layout.activity_main
+    override fun layout(): Int = R.layout.layout_main_nav
 
     override fun initValue(savedInstanceState: Bundle?) {
         credits = App.taskOrWishService().statistic()
@@ -85,12 +82,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.NEW_TASK_OR_WISH_CODE) {
-            val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
-            val type = data.getIntExtra(Constants.TYPE_KEY, Constants.TYPE_TASK)
-            val adapter = view_pager.adapter as MainViewPageAdapter
-            if (task != null) {
-                adapter.add(Constants.pos(type), task)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == Constants.NEW_TASK_OR_WISH_CODE) {
+                val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
+                val type = data.getIntExtra(Constants.TYPE_KEY, Constants.TYPE_TASK)
+                val adapter = view_pager.adapter as MainViewPageAdapter
+                if (task != null) {
+                    adapter.add(Constants.pos(type), task)
+                }
+            } else if (requestCode == FileBrowserActivity.RESULT_CODE) {
+                val path = data?.getStringExtra(FileBrowserActivity.RESULT_FILE_KEY)
+                if (path == null) {
+                    Utils.makeLongToast(this, "路径选择错误")
+                } else {
+                    try {
+                        backupTaskOrWish(path)
+                    } catch (e: Exception) {
+                        Utils.makeLongToast(this, e.message.orElse("备份出错"))
+                    }
+                }
             }
         }
     }
@@ -133,7 +143,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_about -> {
             }
             R.id.nav_backup -> {
-                backupTaskOrWish("")
+//                backupTaskOrWish("")
+                FileBrowserActivity.start(this, "")
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -144,7 +155,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val file = Utils.externalStorageDirectory() ?: return
         val all = App.taskOrWishService().findAllTaskOrWish()
         val bi = BackupInfo(Constants.VERSION, all)
-        val backupPath = bi.backup(file)
+        val backupPath = bi.backup(path)
         Log.d(TAG, backupPath)
         Log.d(TAG, bi.toJson())
     }

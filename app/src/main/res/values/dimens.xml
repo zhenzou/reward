@@ -2,7 +2,7 @@
     <dimen name="nav_header_height">180dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
 
-    <dimen name="card_view_margin">5dp</dimen>
+    <dimen name="card_view_margin">6dp</dimen>
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -17,6 +17,9 @@
     <dimen name="list_item_height">54dp</dimen>
     <dimen name="list_item_title">36dp</dimen>
     <dimen name="list_item_desc">18dp</dimen>
+
+    <dimen name="list_item_left_icon">32dp</dimen>
+    <dimen name="list_item_icon_padding">6dp</dimen>
 
 
 </resources>

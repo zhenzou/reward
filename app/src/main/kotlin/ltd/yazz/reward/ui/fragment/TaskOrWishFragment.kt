@@ -11,7 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
-import kotlinx.android.synthetic.main.list_task.view.*
+import kotlinx.android.synthetic.main.fragment_task_list.view.*
 
 import ltd.yazz.reward.App
 import ltd.yazz.reward.Constants
@@ -33,7 +33,7 @@ class TaskOrWishFragment : PageFragment() {
     private var title: String = Constants.TITLE_TASK
     private var type: Int = Constants.TYPE_TASK
 
-    override fun layout(): Int = R.layout.list_task
+    override fun layout(): Int = R.layout.fragment_task_list
     override fun getTitle(): String = this.title
     override fun getType(): Int = this.type
 
