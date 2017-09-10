@@ -21,8 +21,10 @@ import ltd.yazz.reward.model.BackupInfo
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
+import ltd.yazz.reward.util.IOS
 import ltd.yazz.reward.util.Utils
 import ltd.yazz.reward.util.orElse
+import java.io.IOException
 
 /**
  * Project:Reward
@@ -82,15 +84,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.NEW_TASK_OR_WISH_CODE) {
+        if (resultCode != Activity.RESULT_OK) return
+        when (requestCode) {
+            Constants.NEW_TASK_OR_WISH_CODE -> {
                 val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
                 val type = data.getIntExtra(Constants.TYPE_KEY, Constants.TYPE_TASK)
                 val adapter = view_pager.adapter as MainViewPageAdapter
                 if (task != null) {
                     adapter.add(Constants.pos(type), task)
                 }
-            } else if (requestCode == FileBrowserActivity.RESULT_CODE) {
+            }
+            FileBrowserActivity.BACKUP_RESULT_CODE -> {
                 val path = data?.getStringExtra(FileBrowserActivity.RESULT_FILE_KEY)
                 if (path == null) {
                     Utils.makeLongToast(this, "路径选择错误")
@@ -99,6 +103,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         backupTaskOrWish(path)
                     } catch (e: Exception) {
                         Utils.makeLongToast(this, e.message.orElse("备份出错"))
+                    }
+                }
+            }
+            FileBrowserActivity.RESTORE_RESULT_CODE -> {
+                val path = data?.getStringExtra(FileBrowserActivity.RESULT_FILE_KEY)
+                if (path == null) {
+                    Utils.makeLongToast(this, "请选择正确的文件")
+                } else {
+                    try {
+                        Log.d(TAG, path)
+                        Log.d(TAG, IOS.readAll(path))
+                    } catch (e: IOException) {
+                        Utils.makeLongToast(this, e.message.orElse("恢复出错"))
                     }
                 }
             }
@@ -143,8 +160,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_about -> {
             }
             R.id.nav_backup -> {
-//                backupTaskOrWish("")
-                FileBrowserActivity.start(this, "")
+                FileBrowserActivity.start(this, null)
+            }
+            R.id.nav_restore -> {
+                FileBrowserActivity.start(this, null, FileBrowserActivity.ACTION_RESTORE)
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -152,12 +171,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun backupTaskOrWish(path: String) {
-        val file = Utils.externalStorageDirectory() ?: return
         val all = App.taskOrWishService().findAllTaskOrWish()
         val bi = BackupInfo(Constants.VERSION, all)
         val backupPath = bi.backup(path)
         Log.d(TAG, backupPath)
-        Log.d(TAG, bi.toJson())
     }
 
     override fun onPageSelected(position: Int) {

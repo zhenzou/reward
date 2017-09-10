@@ -19,6 +19,7 @@ class BackupInfo(val version: Int, val items: List<TaskOrWish>) {
     }
 
     fun backup(fp: String): String {
+        val fp = if (fp.endsWith("/")) fp else fp + "/"
         val fw = FileWriter(fp + "reward.bak")
         fw.use { fw.write(toJson()) }
         return fp

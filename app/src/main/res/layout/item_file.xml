@@ -20,6 +20,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/list_item_icon_padding"
         android:gravity="center_vertical"
+        android:maxLines="1"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:text="@string/title" />

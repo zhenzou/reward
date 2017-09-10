@@ -58,7 +58,6 @@ object Utils {
         }
     }
 
-
     fun externalStorageDirectoryFile(): File? {
         val state = Environment.getExternalStorageState()
         return if (state == Environment.MEDIA_MOUNTED) {

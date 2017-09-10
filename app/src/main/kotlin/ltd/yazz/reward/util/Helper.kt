@@ -100,7 +100,17 @@ fun Array<File>?.toFileInfos(): MutableList<FileInfo> {
     return when (this) {
         null -> mutableListOf()
         else -> {
-            this.map { FileInfo(it) }.toMutableList()
+            val list = this.map { FileInfo(it) }.toMutableList()
+            list.sortWith(Comparator({ f1, f2 ->
+                if (f1.dir) {
+                    if (f2.dir) f1.name.compareTo(f2.name)
+                    else -1
+                } else {
+                    if (f2.dir) 1
+                    else f1.name.compareTo(f2.name)
+                }
+            }))
+            list
         }
     }
 }
