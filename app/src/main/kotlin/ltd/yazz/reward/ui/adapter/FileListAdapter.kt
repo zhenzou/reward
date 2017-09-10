@@ -1,10 +1,10 @@
 package ltd.yazz.reward.ui.adapter
 
+import java.io.File
+import java.io.FileFilter
+
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.support.v7.widget.LinearLayoutManager
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +16,6 @@ import ltd.yazz.reward.R
 import ltd.yazz.reward.model.FileInfo
 import ltd.yazz.reward.util.Utils
 import ltd.yazz.reward.util.toFileInfos
-import java.io.File
-import java.io.FileFilter
-import java.util.*
 
 /**
  * Project:Reward
@@ -31,6 +28,16 @@ class FileInfoListAdapter(root: String, val filter: FileFilter? = null) : BaseRe
 
 
     val cache = mutableMapOf<String, MutableList<FileInfo>>()
+    var selected = -1
+        set(value) {
+            val old = field
+            field = value
+            if (old >= 0) {
+                notifyItemChanged(old)
+            }
+            notifyItemChanged(value)
+        }
+
     var cur = root
 
     init {
@@ -46,11 +53,15 @@ class FileInfoListAdapter(root: String, val filter: FileFilter? = null) : BaseRe
     }
 
     fun enterDir(path: String, cache: Boolean = true) {
-        val list = File(path).listFiles(filter).toFileInfos()
-        fill(list)
-        if (cache) {
-            this.cache[path] = list
+        var files = this.cache[path]
+        if (files == null) {
+            files = File(path).listFiles(filter).toFileInfos()
+            if (cache) {
+                this.cache[path] = files
+            }
         }
+        fill(files)
+        selected = -1
         cur = path
     }
 
@@ -60,21 +71,17 @@ class FileInfoListAdapter(root: String, val filter: FileFilter? = null) : BaseRe
     fun back(): Boolean {
         if (cur == "/") return false
         val path = File(cur).parent
-        val files = cache[path]
-        if (files == null) {
-            enterDir(path)
-        } else {
-            cur = path
-            fill(files)
-        }
+        enterDir(path)
         return true
     }
 
-    override fun onBindViewHolder(holder: FileInfoViewHolder, position: Int) = holder.bind(getItem(position)!!)
+    override fun onBindViewHolder(holder: FileInfoViewHolder, position: Int) = holder.bind(getItem(position)!!, position)
 
-    class FileInfoViewHolder(private val ctx: Context, itemView: View, listener: OnItemClickListener?) : BaseViewHolder<FileInfo>(itemView, listener) {
+    inner class FileInfoViewHolder(private val ctx: Context, itemView: View, listener: OnItemClickListener?) : BaseViewHolder<FileInfo>(itemView, listener) {
 
-        override fun bind(m: FileInfo) {
+        override fun bind(m: FileInfo, pos: Int) {
+            if (adapterPosition != RecyclerView.NO_POSITION && adapterPosition == selected) itemView.setBackgroundColor(Utils.getColor(ctx, R.color.PURE_GRAY_300))
+            else itemView.setBackgroundColor(Color.TRANSPARENT)
             itemView.file_name.text = m.name
             itemView.file_icon.setImageDrawable(when (m.type()) {
                 Constants.FILE_DIR -> Utils.getDrawable(ctx, R.drawable.ic_folder_black_24dp)

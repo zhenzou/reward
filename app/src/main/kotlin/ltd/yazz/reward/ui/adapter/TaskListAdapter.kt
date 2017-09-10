@@ -26,11 +26,11 @@ class TaskListAdapter(data: MutableList<TaskOrWish>) : BaseRecyclerAdapter<TaskO
         return TaskViewHolder(ctx!!, view, listener)
     }
 
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) = holder.bind(getItem(position)!!)
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) = holder.bind(getItem(position)!!, position)
 
     class TaskViewHolder(private val ctx: Context, itemView: View, listener: BaseViewHolder.OnItemClickListener?) : BaseViewHolder<TaskOrWish>(itemView, listener) {
 
-        override fun bind(m: TaskOrWish) {
+        override fun bind(m: TaskOrWish, position: Int) {
             itemView.item_check.isChecked = false
             itemView.item_check.setOnClickListener(this)
             itemView.empty_hint.text = m.title

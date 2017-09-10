@@ -24,7 +24,7 @@ abstract class BaseViewHolder<M> constructor(itemView: View, listener: OnItemCli
         fun onItemLongClick(view: View, position: Int)
     }
 
-    abstract fun bind(m: M)
+    abstract fun bind(m: M, pos: Int)
 
     override fun onClick(view: View) {
         val position = adapterPosition

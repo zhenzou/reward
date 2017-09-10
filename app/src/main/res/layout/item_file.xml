@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
     android:layout_margin="@dimen/card_view_margin"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:background="?attr/selectableItemBackground"
+    android:focusable="true"
     android:orientation="horizontal">
 
     <ImageView

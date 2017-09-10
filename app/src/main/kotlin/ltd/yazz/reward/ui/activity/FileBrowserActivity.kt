@@ -1,5 +1,7 @@
 package ltd.yazz.reward.ui.activity;
 
+import java.io.FileFilter
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_file_browser.*
-import java.io.FileFilter
 
 import ltd.yazz.reward.R
 import ltd.yazz.reward.ui.adapter.BaseViewHolder
@@ -86,6 +87,7 @@ class FileBrowserActivity : BaseActivity(), BaseViewHolder.OnItemClickListener {
             adapter?.enterDir(item.path)
             title = adapter?.cur
         } else {
+            adapter?.selected = position
             file = item.path
         }
     }
