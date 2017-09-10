@@ -3,6 +3,8 @@ package ltd.yazz.reward.model
 import com.google.gson.Gson
 import java.io.FileWriter
 
+import ltd.yazz.reward.util.IOS
+
 
 /**
  * Project:Reward
@@ -14,7 +16,8 @@ import java.io.FileWriter
 class BackupInfo(val version: Int, val items: List<TaskOrWish>) {
     companion object {
         fun restore(f: String): BackupInfo {
-            throw RuntimeException("not implement")
+            val json = IOS.readAll(f)
+            return Gson().fromJson<BackupInfo>(json, BackupInfo::class.java)
         }
     }
 
@@ -28,5 +31,6 @@ class BackupInfo(val version: Int, val items: List<TaskOrWish>) {
     fun toJson(): String {
         return "{\"version\":$version,items:${Gson().toJson(items)}}"
     }
+
 
 }

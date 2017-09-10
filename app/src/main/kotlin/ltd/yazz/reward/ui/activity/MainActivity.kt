@@ -11,20 +11,21 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.github.salomonbrys.kotson.nullableTypeAdapter
 import kotlinx.android.synthetic.main.layout_main_nav.*
 import kotlinx.android.synthetic.main.activity_main.*
-import ltd.yazz.reward.App
+import com.google.gson.JsonSyntaxException
+import java.io.IOException
 
+import ltd.yazz.reward.App
 import ltd.yazz.reward.Constants
 import ltd.yazz.reward.R
 import ltd.yazz.reward.model.BackupInfo
 import ltd.yazz.reward.model.TaskOrWish
 import ltd.yazz.reward.ui.adapter.MainViewPageAdapter
 import ltd.yazz.reward.ui.fragment.TaskOrWishFragment
-import ltd.yazz.reward.util.IOS
 import ltd.yazz.reward.util.Utils
 import ltd.yazz.reward.util.orElse
-import java.io.IOException
 
 /**
  * Project:Reward
@@ -112,10 +113,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     Utils.makeLongToast(this, "请选择正确的文件")
                 } else {
                     try {
-                        Log.d(TAG, path)
-                        Log.d(TAG, IOS.readAll(path))
+                        Log.d(TAG, "restore path:" + path)
+                        val bi = BackupInfo.restore(path)
+                        val list = bi.items.map { App.taskOrWishService().addNewTaskOrWish(it) }
+                        Utils.makeLongToast(this, "恢复完成")
                     } catch (e: IOException) {
-                        Utils.makeLongToast(this, e.message.orElse("恢复出错"))
+                        Utils.makeLongToast(this, e.message.orElse("读取文件出错，请选择正确的文件"))
+                    } catch (e: JsonSyntaxException) {
+                        Utils.makeLongToast(this, e.message.orElse("文件格式错误，请选择正确的文件"))
                     }
                 }
             }
