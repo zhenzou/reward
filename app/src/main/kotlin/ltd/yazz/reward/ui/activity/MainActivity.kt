@@ -44,6 +44,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var type = Constants.TYPE_TASK
     private var title = Constants.TITLE_TASK
     private var lastPressBack = 0L
+    private var adapter: MainViewPageAdapter? = null
     private var credits = 0
         set(value) {
             field = value
@@ -64,7 +65,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-        view_pager.adapter = MainViewPageAdapter(this.supportFragmentManager)
+        adapter = MainViewPageAdapter(this.supportFragmentManager)
+        view_pager.adapter = adapter
         tab_layout.setupWithViewPager(view_pager)
         view_pager.addOnPageChangeListener(this)
         fab.setOnClickListener(this)
@@ -90,9 +92,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             Constants.NEW_TASK_OR_WISH_CODE -> {
                 val task = data!!.getParcelableExtra<TaskOrWish>(Constants.NEW_TASK_OR_WISH_VALUE_KEY)
                 val type = data.getIntExtra(Constants.TYPE_KEY, Constants.TYPE_TASK)
-                val adapter = view_pager.adapter as MainViewPageAdapter
                 if (task != null) {
-                    adapter.add(Constants.pos(type), task)
+                    adapter?.add(Constants.pos(type), task)
                 }
             }
             FileBrowserActivity.BACKUP_RESULT_CODE -> {
@@ -116,6 +117,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         Log.d(TAG, "restore path:" + path)
                         val bi = BackupInfo.restore(path)
                         val list = bi.items.map { App.taskOrWishService().addNewTaskOrWish(it) }
+                        for (taskOrWish in list) {
+                            adapter?.add(Constants.pos(taskOrWish.type), taskOrWish)
+                        }
                         Utils.makeLongToast(this, "恢复完成")
                     } catch (e: IOException) {
                         Utils.makeLongToast(this, e.message.orElse("读取文件出错，请选择正确的文件"))

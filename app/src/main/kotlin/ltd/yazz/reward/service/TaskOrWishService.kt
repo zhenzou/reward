@@ -19,11 +19,11 @@ class TaskOrWishService(private val helper: DbHelper) {
     private val table = "task_or_wish"
 
     fun findAllTask(): List<TaskOrWish> {
-        return find("type=? and state =?", Constants.TYPE_TASK, Constants.STATE_NEW)
+        return find("type=? and state =? order by amount desc", Constants.TYPE_TASK, Constants.STATE_NEW)
     }
 
     fun findAllWish(): List<TaskOrWish> {
-        return find("type=? and state =?", Constants.TYPE_WISH, Constants.STATE_NEW)
+        return find("type=? and state =? order by amount desc", Constants.TYPE_WISH, Constants.STATE_NEW)
     }
 
     fun findAllTaskOrWish(): List<TaskOrWish> {
