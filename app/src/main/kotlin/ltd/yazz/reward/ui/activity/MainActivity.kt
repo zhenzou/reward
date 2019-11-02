@@ -189,8 +189,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onPageSelected(position: Int) {
 
         Log.i(TAG, position.toString())
-        Log.i(TAG, view_pager.adapter.getPageTitle(position).toString())
-        val title = view_pager.adapter.getPageTitle(position).toString()
+        Log.i(TAG, view_pager.adapter?.getPageTitle(position).toString())
+        val title = view_pager.adapter?.getPageTitle(position).toString()
         when (title) {
             Constants.TITLE_TASK -> {
                 setType(Constants.TYPE_TASK)

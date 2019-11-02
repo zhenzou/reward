@@ -9,8 +9,8 @@ import android.view.ViewGroup
 
 abstract class BaseFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (inflater != null && layout() != 0) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (layout() != 0) {
             return inflater.inflate(layout(), container, false)
         }
         return super.onCreateView(inflater, container, savedInstanceState)

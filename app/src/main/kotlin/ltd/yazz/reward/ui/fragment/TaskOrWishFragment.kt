@@ -113,12 +113,12 @@ class TaskOrWishFragment : PageFragment() {
     private fun confirmFinishTask(view: CheckBox, position: Int) {
         val task = adapter.getItem(position)!!
         val title = resources.getString(if (type == Constants.TYPE_WISH) R.string.finish_wish else R.string.finish_task)
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(title)
                 .setIcon(R.drawable.ic_confirmation_number_black_24dp)
                 .setMessage("确定$title:${task.title}?")
-                .setNegativeButton(R.string.cancel, { v, _ -> view.isChecked = false;v.dismiss() })
-                .setPositiveButton(R.string.ok, { _, _ ->
+                .setNegativeButton(R.string.cancel) { v, _ -> view.isChecked = false;v.dismiss() }
+                .setPositiveButton(R.string.ok) { _, _ ->
                     if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_DONE)) > 0) {
                         adapter.remove(position)
                         if (task.type == Constants.TYPE_WISH) {
@@ -126,27 +126,27 @@ class TaskOrWishFragment : PageFragment() {
                         } else {
                             listener?.onChange(task.amount)
                         }
-                        Utils.makeShortToast(activity, "成功$title")
+                        Utils.makeShortToast(activity!!, "成功$title")
                     }
-                })
+                }
         builder.show()
     }
 
     override fun onItemLongClick(view: View, position: Int) {
         if (type == Constants.TYPE_WISH) return //暂时不允许删除心愿
         val title = adapter.getItem(position)!!.title
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(R.string.cancel_task)
                 .setIcon(R.drawable.ic_warning_black_24dp)
                 .setMessage("取消任务:$title?")
-                .setNegativeButton(R.string.cancel, { v, _ -> v.dismiss() })
-                .setPositiveButton(R.string.ok, { _, _ ->
+                .setNegativeButton(R.string.cancel) { v, _ -> v.dismiss() }
+                .setPositiveButton(R.string.ok) { _, _ ->
                     val task = adapter.getItem(position)!!
                     if (App.taskOrWishService().editTaskOrWish(task._id, task.copy(state = Constants.STATE_CANCEL)) > 0) {
                         adapter.remove(position)
-                        Utils.makeShortToast(activity, "取消成功")
+                        Utils.makeShortToast(activity!!, "取消成功")
                     }
-                })
+                }
         builder.show()
     }
 
